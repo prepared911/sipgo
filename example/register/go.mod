@@ -1,6 +1,6 @@
 module github.com/emiago/example/register
 
-go 1.19
+go 1.22.1
 
 require (
 	github.com/emiago/sipgo v0.15.3-0.20231207234626-aec90a5f251e
