@@ -9,8 +9,6 @@ import (
 	"github.com/emiago/sipgo/sip"
 )
 
-type StatusCode int
-
 var (
 	ErrDialogOutsideDialog   = errors.New("Call/Transaction Outside Dialog")
 	ErrDialogDoesNotExists   = errors.New("Call/Transaction Does Not Exist")

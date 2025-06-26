@@ -209,6 +209,8 @@ func SplitByWhitespace(text string) []string {
 	return result
 }
 
+type StatusCode int
+
 // A delimiter is any pair of characters used for quoting text (i.e. bulk escaping literals).
 type delimiter struct {
 	start uint8
