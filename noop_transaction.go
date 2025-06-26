@@ -64,16 +64,8 @@ func (t *NoOpServerTransaction) Acks() <-chan *sip.Request {
 	return reqCh
 }
 
-func (t *NoOpTransaction) OnCancel(_ sip.FnTxCancel) bool {
-	return false
-}
-
 type NoOpClientTransaction struct {
 	NoOpTransaction
 }
 
 var _ sip.ClientTransaction = &NoOpClientTransaction{}
-
-func (t *NoOpClientTransaction) OnRetransmission(_ sip.FnTxResponse) bool {
-	return false
-}
