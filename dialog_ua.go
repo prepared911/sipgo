@@ -38,9 +38,9 @@ func (ua *DialogUA) NewServerSession(params DialogSessionParams) (*DialogServerS
 	if params.InviteReq == nil {
 		return nil, errors.New("invite request is required")
 	}
-	if params.InviteResp == nil {
-		return nil, errors.New("invite response is required")
-	}
+	//if params.InviteResp == nil {
+	//	return nil, errors.New("invite response is required")
+	//}
 
 	dialogID, err := sip.UASReadRequestDialogID(params.InviteReq)
 	if err != nil {
@@ -118,9 +118,9 @@ func (ua *DialogUA) NewClientSession(params DialogSessionParams) (*DialogClientS
 	if params.InviteReq == nil {
 		return nil, errors.New("invite request is required")
 	}
-	if params.InviteResp == nil {
-		return nil, errors.New("invite response is required")
-	}
+	//if params.InviteResp == nil {
+	//	return nil, errors.New("invite response is required")
+	//}
 
 	dialogID, err := sip.UACReadRequestDialogID(params.InviteReq)
 	if err != nil {
