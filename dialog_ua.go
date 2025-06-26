@@ -134,7 +134,7 @@ func (ua *DialogUA) NewClientSession(params DialogSessionParams) (*DialogClientS
 			InviteResponse: params.InviteResp,
 		},
 		inviteTx: &NoOpClientTransaction{},
-		UA:       ua,
+		ua:       ua,
 	}
 	dtx.InitWithState(params.State)
 	dtx.SetCSEQ(params.CSeq)
