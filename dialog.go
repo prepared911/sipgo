@@ -164,3 +164,7 @@ func (d *Dialog) ReadRequest(req *sip.Request, tx sip.ServerTransaction) error {
 
 	return nil
 }
+
+func (d *Dialog) SetCSEQ(cseq uint32) {
+	d.lastCSeqNo.Store(cseq)
+}
