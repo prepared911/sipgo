@@ -2,8 +2,8 @@ package sipgo
 
 import (
 	"context"
+	"errors"
 	"fmt"
-
 	"github.com/emiago/sipgo/sip"
 	"github.com/google/uuid"
 )
@@ -19,6 +19,40 @@ type DialogUA struct {
 
 	// RewriteContact sends request on source IP instead Contact. Should be used when behind NAT.
 	RewriteContact bool
+}
+
+type DialogSessionParams struct {
+	// InviteReq is the initial INVITE request that started the dialog.
+	InviteReq *sip.Request
+	// InviteResp is the response to the initial INVITE request.
+	InviteResp *sip.Response
+	// State is the active dialog state.
+	State sip.DialogState
+	// CSeq is the last CSeq number to set in dialog.
+	CSeq     uint32
+	DialogID string
+}
+
+// NewServerSession generates a DialogServerSession without creating a transaction for the initial INVITE.
+// Only use this if the initial transaction has already been completed.
+func (ua *DialogUA) NewServerSession(params DialogSessionParams) (*DialogServerSession, error) {
+	if params.InviteReq == nil {
+		return nil, errors.New("invite request is required")
+	}
+
+	dtx := &DialogServerSession{
+		Dialog: Dialog{
+			ID:             params.DialogID,
+			InviteRequest:  params.InviteReq,
+			InviteResponse: params.InviteResp,
+		},
+		inviteTx: &NoOpServerTransaction{},
+		ua:       ua,
+	}
+	dtx.InitWithState(params.State)
+	dtx.SetCSEQ(params.CSeq)
+
+	return dtx, nil
 }
 
 func (c *DialogUA) ReadInvite(inviteReq *sip.Request, tx sip.ServerTransaction) (*DialogServerSession, error) {
@@ -84,6 +118,28 @@ func (c *DialogUA) ReadInvite(inviteReq *sip.Request, tx sip.ServerTransaction) 
 		}
 		return nil, fmt.Errorf("transaction terminated already")
 	}
+
+	return dtx, nil
+}
+
+// NewClientSession generates a DialogClientSession without sending out an INVITE.
+// Only use this if the initial transaction has already been completed.
+func (ua *DialogUA) NewClientSession(params DialogSessionParams) (*DialogClientSession, error) {
+	if params.InviteReq == nil {
+		return nil, errors.New("invite request is required")
+	}
+
+	dtx := &DialogClientSession{
+		Dialog: Dialog{
+			ID:             params.DialogID,
+			InviteRequest:  params.InviteReq,
+			InviteResponse: params.InviteResp,
+		},
+		inviteTx: &NoOpClientTransaction{},
+		UA:       ua,
+	}
+	dtx.InitWithState(params.State)
+	dtx.SetCSEQ(params.CSeq)
 
 	return dtx, nil
 }
